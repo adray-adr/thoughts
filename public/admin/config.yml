@@ -1,0 +1,36 @@
+backend:
+  name: github
+  repo: adray-adr/thoughts
+  branch: main
+  base_url: https://thoughts-red.vercel.app
+  auth_endpoint: api/auth
+
+publish_mode: simple
+media_folder: "src/assets/uploads"
+public_folder: "/uploads"
+
+collections:
+  - name: "notes"
+    label: "Notes"
+    label_singular: "Note"
+    folder: "src/content/notes"
+    create: true
+    slug: "{{year}}{{month}}{{day}}-{{hour}}{{minute}}{{second}}"
+    fields:
+      - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", default: "" }
+      - { label: "Tags", name: "tags", widget: "list", required: false }
+      - { label: "Note", name: "body", widget: "markdown" }
+
+  - name: "posts"
+    label: "Posts"
+    label_singular: "Post"
+    folder: "src/content/posts"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", default: "" }
+      - { label: "Excerpt", name: "excerpt", widget: "text", hint: "One sentence shown in the feed preview" }
+      - { label: "Tags", name: "tags", widget: "list", required: false }
+      - { label: "Draft", name: "draft", widget: "boolean", default: false, required: false }
+      - { label: "Post body", name: "body", widget: "markdown" }
