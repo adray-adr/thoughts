@@ -1,0 +1,38 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+const { title, description = 'A place for thoughts, quick and long.' } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="icon" href="data:," />
+</head>
+<body>
+  <div class="wrap">
+    <header class="site-header">
+      <a href="/"><span class="site-mark">Thoughts Corner</span></a>
+      <nav>
+        <a href="/">Feed</a>
+        <a href="/about">About</a>
+      </nav>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      &copy; {new Date().getFullYear()} &mdash; built with Astro.
+    </footer>
+  </div>
+</body>
+</html>

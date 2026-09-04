@@ -1,0 +1,31 @@
+---
+import Base from './Base.astro';
+import Giscus from '../components/Giscus.astro';
+
+interface Props {
+  title: string;
+  date: Date;
+  excerpt: string;
+  tags?: string[];
+}
+const { title, date, excerpt, tags = [] } = Astro.props;
+const formatted = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+<Base title={`${title} — Thoughts Corner`} description={excerpt}>
+  <article>
+    <div class="post-header">
+      <div class="entry-date">{formatted}</div>
+      <h1>{title}</h1>
+      {tags.length > 0 && (
+        <div class="tags">
+          {tags.map((t) => <a class="tag" href={`/?tag=${t}`}>{t}</a>)}
+        </div>
+      )}
+    </div>
+    <div class="post-body">
+      <slot />
+    </div>
+  </article>
+
+  <Giscus />
+</Base>

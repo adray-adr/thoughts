@@ -1,0 +1,57 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const rawNotes = await getCollection('notes');
+const notes = await Promise.all(
+  rawNotes.map(async (n) => {
+    const { Content } = await n.render();
+    return {
+      kind: 'note' as const,
+      date: n.data.date,
+      tags: n.data.tags ?? [],
+      slug: n.slug,
+      Content,
+    };
+  })
+);
+
+const rawPosts = await getCollection('posts', ({ data }) => !data.draft);
+const posts = rawPosts.map((p) => ({
+  kind: 'post' as const,
+  date: p.data.date,
+  tags: p.data.tags ?? [],
+  slug: p.slug,
+  title: p.data.title,
+  excerpt: p.data.excerpt,
+}));
+
+const feed = [...notes, ...posts].sort((a, b) => b.date.valueOf() - a.date.valueOf());
+
+function fmt(d: Date) {
+  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+---
+<Base title="Thoughts Corner">
+  <div class="feed">
+    {feed.map((item) => (
+      item.kind === 'note' ? (
+        <div class="note">
+          <div class="entry-date">{fmt(item.date)}</div>
+          <item.Content />
+          {item.tags.length > 0 && (
+            <div class="tags">
+              {item.tags.map((t) => <a class="tag" href={`/?tag=${t}`}>{t}</a>)}
+            </div>
+          )}
+        </div>
+      ) : (
+        <div class="post-preview">
+          <div class="entry-date">{fmt(item.date)}</div>
+          <h2><a href={`/posts/${item.slug}/`}>{item.title}</a></h2>
+          <p class="excerpt">{item.excerpt}</p>
+        </div>
+      )
+    ))}
+  </div>
+</Base>
